@@ -1,0 +1,49 @@
+import streamlit as st
+import pandas as pd
+
+# Load your updated CSV
+df = pd.read_csv("MP 2031 table_new.csv")
+
+# Clean up all headers: strip spaces and normalize case
+df.columns = df.columns.str.strip().str.replace('\ufeff', '').str.lower()
+
+# Rename columns to consistent internal names
+df = df.rename(columns={
+    'village': 'Village',
+    'khasra': 'Khasra',
+    'land use': 'Land use',
+    'sub class': 'Sub class',
+    'latitude': 'Latitude',
+    'longitude': 'Longitude'
+})
+
+# Clean each column
+df["Village"] = df["Village"].astype(str).str.strip()
+df["Khasra"] = df["Khasra"].astype(str).str.strip()
+
+# Streamlit UI
+st.set_page_config(page_title="Village Khasra Search Chatbot", layout="centered")
+st.markdown("<h1 style='text-align: center;'>Village Khasra Search Chatbot</h1>", unsafe_allow_html=True)
+
+# Dropdown for village selection
+village = st.selectbox("Select a Village", sorted(df["Village"].unique()))
+
+# Input for khasra number
+khasra = st.text_input("Enter Khasra Number")
+
+# Search logic
+if khasra:
+    khasra = khasra.strip()
+    result = df[(df["Village"] == village) & (df["Khasra"] == khasra)]
+
+    if not result.empty:
+        st.success("✅ Khasra details found:")
+        st.table(result[["Village", "Khasra", "Land use", "Sub class", "Latitude", "Longitude"]])
+    else:
+        st.warning("⚠️ No matching Khasra found in this village.")
+else:
+    st.info("Enter a Khasra number to begin the search.")
+
+# Optional: View full dataset
+with st.expander("📘 View full dataset"):
+    st.dataframe(df)
