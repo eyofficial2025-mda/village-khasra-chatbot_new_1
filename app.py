@@ -1,190 +1,106 @@
 import streamlit as st
 import pandas as pd
-import time
-import random
+from PIL import Image
 
-# -----------------------------------------------------
-# PAGE CONFIG
-# -----------------------------------------------------
-st.set_page_config(
-    page_title="Village Khasra Chatbot",
-    page_icon="💬",
-    layout="wide"
-)
+# ---------- PAGE CONFIG ----------
+st.set_page_config(page_title="Village Khasra Chatbot", page_icon="💬", layout="wide")
 
-# -----------------------------------------------------
-# CUSTOM CSS STYLING
-# -----------------------------------------------------
+# ---------- CUSTOM CSS ----------
 st.markdown("""
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
-
-body {
-    font-family: 'Poppins', sans-serif;
-    background: radial-gradient(circle at top left, #0a0f1e, #091234 50%, #041029 100%);
-    color: #fff;
-}
-h1 {
-    text-align: center;
-    color: #00e1ff;
-    text-shadow: 0 0 15px #00e1ff;
-    font-weight: 700;
-    margin-top: -20px;
-}
-[data-testid="stSidebar"] {
-    background: rgba(10, 15, 30, 0.85);
-    color: #fff;
-}
-.chat-container {
-    background: rgba(255,255,255,0.08);
-    border-radius: 16px;
-    padding: 20px;
-    height: 520px;
-    overflow-y: auto;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-}
-.user-msg {
-    background: linear-gradient(90deg, #0078ff, #00e1ff);
-    color: #000;
-    padding: 10px 14px;
-    border-radius: 15px;
-    margin: 8px 0;
-    text-align: right;
-}
-.bot-msg {
-    background: rgba(255,255,255,0.12);
-    border-left: 4px solid #00e1ff;
-    padding: 10px 14px;
-    border-radius: 15px;
-    margin: 8px 0;
-    text-align: left;
-}
-.stButton>button {
-    background: linear-gradient(90deg, #00e1ff, #00ff9d);
-    color: #001018 !important;
-    font-weight: bold;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 22px;
-    transition: 0.3s;
-}
-.stButton>button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px #00ffcc;
-}
-.typing {
-    color: #00ffcc;
-    font-style: italic;
-    font-size: 14px;
-}
-.voice-btn {
-    border-radius: 50%;
-    width: 48px;
-    height: 48px;
-    background: linear-gradient(45deg, #00ffcc, #00e1ff);
-    border: none;
-    color: #001018;
-    font-weight: bold;
-    cursor: pointer;
-}
-.voice-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px #00e1ff;
-}
-.footer {
-    text-align: center;
-    color: rgba(255,255,255,0.6);
-    margin-top: 30px;
-    font-size: 13px;
-}
-@media (max-width: 768px) {
-    .chat-container {
-        height: 400px;
+    <style>
+    body {
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        color: #ffffff;
+        font-family: 'Poppins', sans-serif;
     }
-}
-</style>
+    .main {
+        background-color: transparent;
+    }
+    h1 {
+        text-align: center;
+        color: #00f9ff;
+        text-shadow: 0px 0px 10px #00f9ff;
+        font-weight: 700;
+    }
+    .stTextInput > div > div > input {
+        background-color: #222;
+        color: white;
+        border-radius: 8px;
+        border: 1px solid #00f9ff;
+    }
+    .stSelectbox > div > div {
+        background-color: #222;
+        color: white;
+        border-radius: 8px;
+        border: 1px solid #00f9ff;
+    }
+    .stButton > button {
+        background: linear-gradient(90deg, #00f9ff, #0077ff);
+        color: black;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 25px;
+        font-weight: bold;
+        box-shadow: 0 0 15px #00f9ff;
+        transition: all 0.3s ease-in-out;
+    }
+    .stButton > button:hover {
+        transform: scale(1.1);
+        background: linear-gradient(90deg, #0077ff, #00f9ff);
+    }
+    .glass-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 25px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 25px rgba(0, 249, 255, 0.2);
+    }
+    </style>
 """, unsafe_allow_html=True)
 
-# -----------------------------------------------------
-# LOAD DATA
-# -----------------------------------------------------
-try:
-    df = pd.read_csv("MP 2031 table_new.csv")
-    df.columns = df.columns.str.strip().str.replace('\ufeff', '').str.lower()
-    df = df.rename(columns={
-        'village': 'Village',
-        'khasra': 'Khasra',
-        'land use': 'Land use',
-        'sub class': 'Sub class',
-        'latitude': 'Latitude',
-        'longitude': 'Longitude'
-    })
-    df["Village"] = df["Village"].astype(str).str.strip()
-    df["Khasra"] = df["Khasra"].astype(str).str.strip()
-except Exception:
-    st.error("⚠️ CSV file not found or unreadable. Please upload 'MP 2031 table_new.csv'.")
-    st.stop()
+# ---------- HEADER ----------
+st.markdown("<h1>💬 Village Khasra Chatbot</h1>", unsafe_allow_html=True)
 
-# -----------------------------------------------------
-# SESSION STATE INIT
-# -----------------------------------------------------
-if "chat" not in st.session_state:
-    st.session_state.chat = [("bot", "👋 Hello! I’m your Village Khasra Assistant. Please select your village and enter Khasra number.")]
-if "typing" not in st.session_state:
-    st.session_state.typing = False
-
-# -----------------------------------------------------
-# MAIN INTERFACE
-# -----------------------------------------------------
-st.markdown("<h1>Village Khasra Chatbot 💬</h1>", unsafe_allow_html=True)
-
-col1, col2 = st.columns([2, 1])
-
-# --------- CHAT SECTION ---------
-with col1:
-    chat_area = st.container()
-    with chat_area:
-        st.markdown("<div class='chat-container'>", unsafe_allow_html=True)
-        for sender, msg in st.session_state.chat:
-            if sender == "user":
-                st.markdown(f"<div class='user-msg'>{msg}</div>", unsafe_allow_html=True)
-            else:
-                st.markdown(f"<div class='bot-msg'>{msg}</div>", unsafe_allow_html=True)
-        if st.session_state.typing:
-            st.markdown("<div class='typing'>Bot is typing...</div>", unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
-
-# --------- SEARCH INPUT SECTION ---------
-with col2:
-    st.markdown("### 🔍 Search Khasra Details")
-    village = st.selectbox("🏘️ Select Village", sorted(df["Village"].unique()))
-    khasra = st.text_input("🧾 Enter Khasra Number")
-
-    # Voice input placeholder (Browser API not native in Streamlit yet)
-    st.markdown("<button class='voice-btn'>🎤</button> <small style='color:rgba(255,255,255,0.6)'>Voice search coming soon</small>", unsafe_allow_html=True)
-
+# ---------- SIDEBAR ----------
+with st.sidebar:
+    st.markdown("## 🔍 Search Khasra Details")
+    village = st.selectbox("🏡 Select Village", ["Ababkaspur", "Asalatpur", "Lodhipur", "Nawada"])
+    khasra = st.text_input("📜 Enter Khasra Number", "")
     if st.button("Search"):
         if khasra:
-            khasra = khasra.strip()
-            st.session_state.chat.append(("user", f"Village: {village}, Khasra: {khasra}"))
-            st.session_state.typing = True
-            st.experimental_rerun()
+            st.session_state["khasra_result"] = f"Khasra {khasra} in {village} is under review."
+            st.rerun()
+        else:
+            st.warning("Please enter a valid Khasra number.")
 
-# -----------------------------------------------------
-# BOT RESPONSE (after rerun)
-# -----------------------------------------------------
-if st.session_state.typing:
-    time.sleep(1.2)
-    result = df[(df["Village"] == village) & (df["Khasra"] == khasra)]
-    if not result.empty:
-        response = f"✅ Record found for **{khasra}** in *{village}*.\nLand use: {result.iloc[0]['Land use']}, Sub-class: {result.iloc[0]['Sub class']}."
+# ---------- MAIN AREA ----------
+st.markdown("<br>", unsafe_allow_html=True)
+col1, col2 = st.columns([3, 2])
+
+with col1:
+    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+    st.subheader("💬 Chat Window")
+    if "khasra_result" in st.session_state:
+        st.success(st.session_state["khasra_result"])
     else:
-        response = f"⚠️ No record found for Khasra **{khasra}** in *{village}*."
-    st.session_state.chat.append(("bot", response))
-    st.session_state.typing = False
-    st.experimental_rerun()
+        st.info("👋 Hello! I’m your Village Khasra Assistant. Please select your village and enter a Khasra number.")
+    st.markdown("</div>", unsafe_allow_html=True)
 
-# -----------------------------------------------------
-# FOOTER
-# -----------------------------------------------------
-st.markdown("<div class='footer'>© 2025 MDA | Designed with 💚 Blue–Green Theme for Public Accessibility</div>", unsafe_allow_html=True)
+with col2:
+    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+    st.subheader("📸 Village Snapshot")
+    try:
+        image = Image.open("village_bg.png")  # place the image file in same directory
+        st.image(image, use_container_width=True)
+    except:
+        st.info("Upload a village image (village_bg.png) for better visualization.")
+    st.markdown("</div>", unsafe_allow_html=True)
+
+# ---------- FOOTER ----------
+st.markdown("""
+    <hr style="border: 1px solid #00f9ff; opacity: 0.3;">
+    <p style='text-align:center; color:gray; font-size:12px;'>
+    🌾 Powered by Moradabad Land Data · © 2025 MDA Digital Innovation
+    </p>
+""", unsafe_allow_html=True)
