@@ -14,65 +14,62 @@ df = df.rename(columns={
 df["Village"] = df["Village"].astype(str).str.strip()
 df["Khasra"] = df["Khasra"].astype(str).str.strip()
 
-st.set_page_config(page_title="Village Khasra Chatbot", layout="centered")
+st.set_page_config(page_title="Village Khasra Bot", layout="centered")
 
 st.markdown("""
     <style>
     body {
-        background: linear-gradient(135deg, #1E1E2F, #2C2C3E);
-        color: #EEE;
-        font-family: 'Inter', sans-serif;
+        background: linear-gradient(180deg, #222831, #393E46);
+        color: #EEEEEE;
+        font-family: 'Poppins', sans-serif;
     }
-    .glass {
-        background: rgba(255, 255, 255, 0.08);
-        border-radius: 16px;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        padding: 20px;
-        margin-top: 20px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    }
-    .title {
+    .chat-header {
         text-align: center;
-        font-size: 2.1rem;
-        font-weight: 700;
-        color: #18FFFF;
+        font-size: 2.2rem;
+        color: #00ADB5;
+        font-weight: bold;
         margin-bottom: 10px;
+    }
+    .chat-bubble {
+        background: #00ADB5;
+        color: #222831;
+        padding: 12px;
+        border-radius: 18px;
+        margin: 10px 0;
+        display: inline-block;
     }
     .stButton>button {
         border: none;
-        background: #18FFFF;
-        color: black;
-        border-radius: 10px;
+        background: #00ADB5;
+        color: #222831;
+        border-radius: 12px;
         padding: 8px 20px;
-        font-weight: 600;
+        font-weight: bold;
     }
     .stButton>button:hover {
-        background: #00E6E6;
+        background: #02C4D2;
     }
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<div class='title'>💬 Village Khasra Chat</div>", unsafe_allow_html=True)
-st.markdown("<div class='glass'>", unsafe_allow_html=True)
+st.markdown("<div class='chat-header'>🤖 Friendly Village Khasra Bot</div>", unsafe_allow_html=True)
 
-village = st.selectbox("Select Village", sorted(df["Village"].unique()))
-khasra = st.text_input("Enter Khasra Number")
+village = st.selectbox("🏘️ Choose a Village", sorted(df["Village"].unique()))
+khasra = st.text_input("📜 Enter Khasra Number")
 
 if khasra:
     result = df[(df["Village"] == village) & (df["Khasra"] == khasra)]
     if not result.empty:
-        st.success("✅ Match found")
+        st.markdown("<div class='chat-bubble'>✅ Found details below:</div>", unsafe_allow_html=True)
         st.table(result[["Village", "Khasra", "Land use", "Sub class", "Latitude", "Longitude"]])
     else:
-        st.warning("⚠️ No match found.")
+        st.markdown("<div class='chat-bubble'>⚠️ No record found.</div>", unsafe_allow_html=True)
 else:
-    st.info("Enter a Khasra number to begin search.")
+    st.info("Enter a Khasra number to start chatting.")
 
-st.markdown("</div>", unsafe_allow_html=True)
-
-with st.expander("📘 View Full Dataset"):
+with st.expander("📘 Full Dataset"):
     st.dataframe(df)
+
 
 
 
