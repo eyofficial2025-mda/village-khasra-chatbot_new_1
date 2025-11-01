@@ -1,62 +1,15 @@
 import streamlit as st
 import pandas as pd
-import base64
 
-# === PAGE CONFIG ===
-st.set_page_config(page_title="Village Khasra Search Chatbot", layout="centered")
+# ------------- PAGE CONFIG -------------
+st.set_page_config(
+    page_title="Village Khasra Chatbot",
+    page_icon="💬",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
 
-# === BACKGROUND SETUP ===
-def set_bg(image_file):
-    with open(image_file, "rb") as f:
-        data = f.read()
-    encoded = base64.b64encode(data).decode()
-    bg_style = f"""
-    <style>
-    [data-testid="stAppViewContainer"] {{
-        background-image: url("data:image/png;base64,{encoded}");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        color: white !important;
-    }}
-    [data-testid="stHeader"], [data-testid="stSidebar"] {{
-        background: rgba(0,0,0,0.7);
-    }}
-    h1, h2, h3, p, div, label {{
-        color: white !important;
-    }}
-    .stTextInput > div > div > input {{
-        background-color: rgba(255,255,255,0.1);
-        color: white !important;
-        border: 1px solid #00B2FF;
-        border-radius: 10px;
-    }}
-    .stSelectbox > div > div {{
-        background-color: rgba(255,255,255,0.1);
-        color: white !important;
-        border: 1px solid #00B2FF;
-        border-radius: 10px;
-    }}
-    .stButton > button {{
-        background: linear-gradient(90deg, #00B2FF, #00FF88);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        padding: 0.6em 1.4em;
-        font-weight: 600;
-    }}
-    .stButton > button:hover {{
-        box-shadow: 0 0 10px #00FF88;
-    }}
-    </style>
-    """
-    st.markdown(bg_style, unsafe_allow_html=True)
-
-# === SET YOUR BACKGROUND IMAGE HERE ===
-set_bg("e9ee4e1a-cd45-4f6e-8f56-f0720150ce83.png")
-
-# === LOAD DATA ===
+# ------------- LOAD DATA -------------
 df = pd.read_csv("MP 2031 table_new.csv")
 df.columns = df.columns.str.strip().str.replace('\ufeff', '').str.lower()
 df = df.rename(columns={
@@ -70,43 +23,89 @@ df = df.rename(columns={
 df["Village"] = df["Village"].astype(str).str.strip()
 df["Khasra"] = df["Khasra"].astype(str).str.strip()
 
-# === HEADER ===
-st.markdown("<h1 style='text-align:center;'>🌐 Village Khasra Search Chatbot</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align:center;'>Search land records quickly — with clarity, accessibility, and comfort.</p>", unsafe_allow_html=True)
-st.markdown("---")
-
-# === SIDEBAR (ACCESSIBILITY TOOLS) ===
-st.sidebar.header("🧩 Accessibility Controls")
-font_size = st.sidebar.slider("Font size", 12, 24, 18)
-contrast_mode = st.sidebar.checkbox("High contrast mode")
-language = st.sidebar.selectbox("Select Language", ["English", "Hindi"])
-
-if contrast_mode:
-    st.markdown("""
+# ------------- CUSTOM STYLING -------------
+st.markdown("""
     <style>
-    * {color: white !important; background-color: black !important;}
+    body {
+        background: radial-gradient(circle at top left, #0d0d0d, #121212, #000000);
+        color: #e6e6e6;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .main {
+        background: linear-gradient(145deg, rgba(20,20,20,1), rgba(15,15,15,1));
+        padding: 3rem;
+        border-radius: 25px;
+        box-shadow: 0px 0px 25px rgba(0, 255, 200, 0.15);
+    }
+
+    h1 {
+        text-align: center;
+        color: #00f5d4;
+        font-size: 2.3rem;
+        text-shadow: 0px 0px 8px rgba(0,245,212,0.4);
+        letter-spacing: 1px;
+    }
+
+    .stSelectbox, .stTextInput, .stButton button {
+        border-radius: 10px !important;
+        border: 1px solid #00f5d4 !important;
+        background-color: rgba(30,30,30,0.9) !important;
+        color: #eaeaea !important;
+        transition: all 0.3s ease;
+    }
+
+    .stTextInput > div > div > input {
+        color: #fff !important;
+    }
+
+    .stButton button:hover {
+        background-color: #00f5d4 !important;
+        color: #000 !important;
+        box-shadow: 0 0 15px #00f5d4;
+    }
+
+    .result-box {
+        background: rgba(25,25,25,0.8);
+        border-radius: 15px;
+        padding: 1rem 1.5rem;
+        margin-top: 1.5rem;
+        box-shadow: 0px 0px 20px rgba(0,245,212,0.1);
+    }
+
+    .footer {
+        text-align: center;
+        margin-top: 40px;
+        font-size: 0.85rem;
+        color: #aaa;
+    }
+
     </style>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
-# === SEARCH PANEL ===
-st.markdown(f"<h3 style='font-size:{font_size}px;'>Search Khasra Details</h3>", unsafe_allow_html=True)
-village = st.selectbox("Select Village", sorted(df["Village"].unique()))
-khasra = st.text_input("Enter Khasra Number")
+# ------------- HEADER -------------
+st.markdown("<h1>Village Khasra Chatbot 💬</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center;color:#9e9e9e;'>Search village land details with ease — clean, readable, professional.</p>", unsafe_allow_html=True)
 
-if st.button("Search"):
-    if khasra:
-        result = df[(df["Village"] == village) & (df["Khasra"] == khasra)]
-        if not result.empty:
-            st.success("✅ Record found!")
-            st.dataframe(result[["Village", "Khasra", "Land use", "Sub class", "Latitude", "Longitude"]])
-        else:
-            st.warning("⚠️ No record found for this Khasra in selected village.")
+# ------------- SEARCH AREA -------------
+st.markdown("<div class='main'>", unsafe_allow_html=True)
+
+village = st.selectbox("🏡 Select a Village", sorted(df["Village"].unique()))
+khasra = st.text_input("📜 Enter Khasra Number")
+
+if st.button("Search 🔍"):
+    khasra = khasra.strip()
+    result = df[(df["Village"] == village) & (df["Khasra"] == khasra)]
+
+    if not result.empty:
+        st.markdown("<div class='result-box'>", unsafe_allow_html=True)
+        st.markdown(f"<h3 style='color:#00f5d4;'>✅ Khasra Details Found</h3>", unsafe_allow_html=True)
+        st.dataframe(result[["Village", "Khasra", "Land use", "Sub class", "Latitude", "Longitude"]])
+        st.markdown("</div>", unsafe_allow_html=True)
     else:
-        st.info("Please enter a Khasra number to search.")
+        st.markdown("<div class='result-box'><h4 style='color:#ff4d4d;'>⚠️ No matching Khasra found in this village.</h4></div>", unsafe_allow_html=True)
 
-# === FOOTER ===
-st.markdown("---")
-st.markdown(
-    "<p style='text-align:center; font-size:14px;'>Designed with 💙 and ♻️ for MDA • Accessible • Multilingual • User-Friendly</p>",
-    unsafe_allow_html=True,
-)
+st.markdown("</div>", unsafe_allow_html=True)
+
+# ------------- FOOTER -------------
+st.markdown("<div class='footer'>Made with 💻 by Moradabad Development Authority</div>", unsafe_allow_html=True)
