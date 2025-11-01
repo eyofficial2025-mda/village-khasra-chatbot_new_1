@@ -1,106 +1,111 @@
 import streamlit as st
 import pandas as pd
-from PIL import Image
 
-# ---------- PAGE CONFIG ----------
-st.set_page_config(page_title="Village Khasra Chatbot", page_icon="💬", layout="wide")
+# ------------- PAGE CONFIG -------------
+st.set_page_config(
+    page_title="Village Khasra Chatbot",
+    page_icon="💬",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
 
-# ---------- CUSTOM CSS ----------
+# ------------- LOAD DATA -------------
+df = pd.read_csv("MP 2031 table_new.csv")
+df.columns = df.columns.str.strip().str.replace('\ufeff', '').str.lower()
+df = df.rename(columns={
+    'village': 'Village',
+    'khasra': 'Khasra',
+    'land use': 'Land use',
+    'sub class': 'Sub class',
+    'latitude': 'Latitude',
+    'longitude': 'Longitude'
+})
+df["Village"] = df["Village"].astype(str).str.strip()
+df["Khasra"] = df["Khasra"].astype(str).str.strip()
+
+# ------------- CUSTOM STYLING -------------
 st.markdown("""
     <style>
     body {
-        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-        color: #ffffff;
-        font-family: 'Poppins', sans-serif;
+        background: radial-gradient(circle at top left, #0d0d0d, #121212, #000000);
+        color: #e6e6e6;
+        font-family: 'Inter', sans-serif;
     }
+
     .main {
-        background-color: transparent;
+        background: linear-gradient(145deg, rgba(20,20,20,1), rgba(15,15,15,1));
+        padding: 3rem;
+        border-radius: 25px;
+        box-shadow: 0px 0px 25px rgba(0, 255, 200, 0.15);
     }
+
     h1 {
         text-align: center;
-        color: #00f9ff;
-        text-shadow: 0px 0px 10px #00f9ff;
-        font-weight: 700;
+        color: #00f5d4;
+        font-size: 2.3rem;
+        text-shadow: 0px 0px 8px rgba(0,245,212,0.4);
+        letter-spacing: 1px;
     }
+
+    .stSelectbox, .stTextInput, .stButton button {
+        border-radius: 10px !important;
+        border: 1px solid #00f5d4 !important;
+        background-color: rgba(30,30,30,0.9) !important;
+        color: #eaeaea !important;
+        transition: all 0.3s ease;
+    }
+
     .stTextInput > div > div > input {
-        background-color: #222;
-        color: white;
-        border-radius: 8px;
-        border: 1px solid #00f9ff;
+        color: #fff !important;
     }
-    .stSelectbox > div > div {
-        background-color: #222;
-        color: white;
-        border-radius: 8px;
-        border: 1px solid #00f9ff;
+
+    .stButton button:hover {
+        background-color: #00f5d4 !important;
+        color: #000 !important;
+        box-shadow: 0 0 15px #00f5d4;
     }
-    .stButton > button {
-        background: linear-gradient(90deg, #00f9ff, #0077ff);
-        color: black;
-        border: none;
-        border-radius: 8px;
-        padding: 8px 25px;
-        font-weight: bold;
-        box-shadow: 0 0 15px #00f9ff;
-        transition: all 0.3s ease-in-out;
-    }
-    .stButton > button:hover {
-        transform: scale(1.1);
-        background: linear-gradient(90deg, #0077ff, #00f9ff);
-    }
-    .glass-card {
-        background: rgba(255, 255, 255, 0.05);
+
+    .result-box {
+        background: rgba(25,25,25,0.8);
         border-radius: 15px;
-        padding: 25px;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        box-shadow: 0 0 25px rgba(0, 249, 255, 0.2);
+        padding: 1rem 1.5rem;
+        margin-top: 1.5rem;
+        box-shadow: 0px 0px 20px rgba(0,245,212,0.1);
     }
+
+    .footer {
+        text-align: center;
+        margin-top: 40px;
+        font-size: 0.85rem;
+        color: #aaa;
+    }
+
     </style>
 """, unsafe_allow_html=True)
 
-# ---------- HEADER ----------
-st.markdown("<h1>💬 Village Khasra Chatbot</h1>", unsafe_allow_html=True)
+# ------------- HEADER -------------
+st.markdown("<h1>Village Khasra Chatbot 💬</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center;color:#9e9e9e;'>Search village land details with ease — clean, readable, professional.</p>", unsafe_allow_html=True)
 
-# ---------- SIDEBAR ----------
-with st.sidebar:
-    st.markdown("## 🔍 Search Khasra Details")
-    village = st.selectbox("🏡 Select Village", ["Ababkaspur", "Asalatpur", "Lodhipur", "Nawada"])
-    khasra = st.text_input("📜 Enter Khasra Number", "")
-    if st.button("Search"):
-        if khasra:
-            st.session_state["khasra_result"] = f"Khasra {khasra} in {village} is under review."
-            st.rerun()
-        else:
-            st.warning("Please enter a valid Khasra number.")
+# ------------- SEARCH AREA -------------
+st.markdown("<div class='main'>", unsafe_allow_html=True)
 
-# ---------- MAIN AREA ----------
-st.markdown("<br>", unsafe_allow_html=True)
-col1, col2 = st.columns([3, 2])
+village = st.selectbox("🏡 Select a Village", sorted(df["Village"].unique()))
+khasra = st.text_input("📜 Enter Khasra Number")
 
-with col1:
-    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-    st.subheader("💬 Chat Window")
-    if "khasra_result" in st.session_state:
-        st.success(st.session_state["khasra_result"])
+if st.button("Search 🔍"):
+    khasra = khasra.strip()
+    result = df[(df["Village"] == village) & (df["Khasra"] == khasra)]
+
+    if not result.empty:
+        st.markdown("<div class='result-box'>", unsafe_allow_html=True)
+        st.markdown(f"<h3 style='color:#00f5d4;'>✅ Khasra Details Found</h3>", unsafe_allow_html=True)
+        st.dataframe(result[["Village", "Khasra", "Land use", "Sub class", "Latitude", "Longitude"]])
+        st.markdown("</div>", unsafe_allow_html=True)
     else:
-        st.info("👋 Hello! I’m your Village Khasra Assistant. Please select your village and enter a Khasra number.")
-    st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown("<div class='result-box'><h4 style='color:#ff4d4d;'>⚠️ No matching Khasra found in this village.</h4></div>", unsafe_allow_html=True)
 
-with col2:
-    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-    st.subheader("📸 Village Snapshot")
-    try:
-        image = Image.open("village_bg.png")  # place the image file in same directory
-        st.image(image, use_container_width=True)
-    except:
-        st.info("Upload a village image (village_bg.png) for better visualization.")
-    st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
-# ---------- FOOTER ----------
-st.markdown("""
-    <hr style="border: 1px solid #00f9ff; opacity: 0.3;">
-    <p style='text-align:center; color:gray; font-size:12px;'>
-    🌾 Powered by Moradabad Land Data · © 2025 MDA Digital Innovation
-    </p>
-""", unsafe_allow_html=True)
+# ------------- FOOTER -------------
+st.markdown("<div class='footer'>Made with 💻 by Moradabad Development Authority</div>", unsafe_allow_html=True)
