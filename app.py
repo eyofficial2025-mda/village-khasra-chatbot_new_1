@@ -47,6 +47,18 @@ st.markdown("""
         letter-spacing: 1px;
     }
 
+    .guide-text {
+        text-align: center;
+        color: #dcdcdc;
+        font-size: 1rem;
+        margin-top: -10px;
+        margin-bottom: 25px;
+        background: rgba(255,255,255,0.05);
+        padding: 0.7rem;
+        border-radius: 10px;
+        border: 1px solid rgba(0,245,212,0.3);
+    }
+
     .stSelectbox, .stTextInput, .stButton button {
         border-radius: 10px !important;
         border: 1px solid #00f5d4 !important;
@@ -96,6 +108,14 @@ st.markdown("""
 st.markdown("<h1>Village Khasra Chatbot 💬</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align:center;color:#9e9e9e;'>Search village land details with ease — clean, readable, professional.</p>", unsafe_allow_html=True)
 
+# ------------- GUIDE TEXT -------------
+st.markdown("""
+<div class="guide-text">
+<b>📝 How to Use:</b><br>
+Choose your Village from the dropdown → Enter Khasra number → Click on Search 🔍
+</div>
+""", unsafe_allow_html=True)
+
 # ------------- SEARCH AREA -------------
 village = st.selectbox("🏡 Select a Village", sorted(df["Village"].unique()))
 khasra = st.text_input("📜 Enter Khasra Number")
@@ -124,6 +144,7 @@ For official confirmation and clarification, please contact or visit the Moradab
 आधिकारिक पुष्टि और स्पष्टीकरण के लिए, कृपया मुरादाबाद विकास प्राधिकरण से संपर्क करें या कार्यालय में जाएँ।
 </div>
 """, unsafe_allow_html=True)
+
 
 
 
