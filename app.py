@@ -32,7 +32,7 @@ st.markdown("""
         font-family: 'Inter', sans-serif;
     }
 
-    .main {
+    .stApp {
         background: linear-gradient(145deg, rgba(20,20,20,1), rgba(15,15,15,1));
         padding: 3rem;
         border-radius: 25px;
@@ -80,6 +80,15 @@ st.markdown("""
         color: #aaa;
     }
 
+    .disclaimer {
+        margin-top: 25px;
+        padding: 1rem;
+        border-top: 1px solid rgba(0,245,212,0.2);
+        color: #aaa;
+        font-size: 0.85rem;
+        text-align: center;
+        line-height: 1.6;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -88,8 +97,6 @@ st.markdown("<h1>Village Khasra Chatbot 💬</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align:center;color:#9e9e9e;'>Search village land details with ease — clean, readable, professional.</p>", unsafe_allow_html=True)
 
 # ------------- SEARCH AREA -------------
-st.markdown("<div class='main'>", unsafe_allow_html=True)
-
 village = st.selectbox("🏡 Select a Village", sorted(df["Village"].unique()))
 khasra = st.text_input("📜 Enter Khasra Number")
 
@@ -105,10 +112,19 @@ if st.button("Search 🔍"):
     else:
         st.markdown("<div class='result-box'><h4 style='color:#ff4d4d;'>⚠️ No matching Khasra found in this village.</h4></div>", unsafe_allow_html=True)
 
-st.markdown("</div>", unsafe_allow_html=True)
-
-# ------------- FOOTER -------------
+# ------------- FOOTER & DISCLAIMER -------------
 st.markdown("<div class='footer'>Made with 💻 by Moradabad Development Authority</div>", unsafe_allow_html=True)
+
+st.markdown("""
+<div class='disclaimer'>
+<b>Disclaimer (अस्वीकरण):</b><br>
+The information provided by this online tool is intended for general guidance and preliminary verification. 
+For official confirmation and clarification, please contact or visit the Moradabad Development Authority.<br><br>
+इस ऑनलाइन टूल द्वारा प्रदान की गई जानकारी केवल सामान्य मार्गदर्शन और प्रारंभिक सत्यापन के लिए है। 
+आधिकारिक पुष्टि और स्पष्टीकरण के लिए, कृपया मुरादाबाद विकास प्राधिकरण से संपर्क करें या कार्यालय में जाएँ।
+</div>
+""", unsafe_allow_html=True)
+
 
 
 
