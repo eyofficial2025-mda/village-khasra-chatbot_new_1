@@ -32,7 +32,7 @@ st.markdown("""
         font-family: 'Inter', sans-serif;
     }
 
-    .main {
+    .stApp {
         background: linear-gradient(145deg, rgba(20,20,20,1), rgba(15,15,15,1));
         padding: 3rem;
         border-radius: 25px;
@@ -97,8 +97,6 @@ st.markdown("<h1>Village Khasra Chatbot 💬</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align:center;color:#9e9e9e;'>Search village land details with ease — clean, readable, professional.</p>", unsafe_allow_html=True)
 
 # ------------- SEARCH AREA -------------
-st.markdown("<div class='main'>", unsafe_allow_html=True)
-
 village = st.selectbox("🏡 Select a Village", sorted(df["Village"].unique()))
 khasra = st.text_input("📜 Enter Khasra Number")
 
@@ -114,8 +112,6 @@ if st.button("Search 🔍"):
     else:
         st.markdown("<div class='result-box'><h4 style='color:#ff4d4d;'>⚠️ No matching Khasra found in this village.</h4></div>", unsafe_allow_html=True)
 
-st.markdown("</div>", unsafe_allow_html=True)
-
 # ------------- FOOTER & DISCLAIMER -------------
 st.markdown("<div class='footer'>Made with 💻 by Moradabad Development Authority</div>", unsafe_allow_html=True)
 
@@ -128,5 +124,6 @@ For official confirmation and clarification, please contact or visit the Moradab
 आधिकारिक पुष्टि और स्पष्टीकरण के लिए, कृपया मुरादाबाद विकास प्राधिकरण से संपर्क करें या कार्यालय में जाएँ।
 </div>
 """, unsafe_allow_html=True)
+
 
 
