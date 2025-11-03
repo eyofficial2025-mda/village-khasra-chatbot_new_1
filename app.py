@@ -26,65 +26,112 @@ df["Khasra"] = df["Khasra"].astype(str).str.strip()
 # ------------- CUSTOM STYLING -------------
 st.markdown("""
     <style>
-    body {
-        background: radial-gradient(circle at top left, #0d0d0d, #121212, #000000);
-        color: #e6e6e6;
-        font-family: 'Inter', sans-serif;
+    :root {
+        --accent-color: #00f5d4;
+        --text-dark: #111;
+        --text-light: #f2f2f2;
+        --bg-dark: linear-gradient(145deg, #121212, #0a0a0a);
+        --bg-light: #ffffff;
+        --border-light: rgba(0,0,0,0.2);
+        --border-dark: rgba(255,255,255,0.15);
     }
 
+    /* GLOBAL LAYOUT */
     .stApp {
-        background: linear-gradient(145deg, rgba(20,20,20,1), rgba(15,15,15,1));
-        padding: 3rem;
-        border-radius: 25px;
-        box-shadow: 0px 0px 25px rgba(0, 255, 200, 0.15);
+        background: var(--bg-dark);
+        color: var(--text-light);
+        font-family: 'Inter', sans-serif;
+        padding: 2rem;
+        border-radius: 20px;
+    }
+
+    [data-theme="light"] .stApp {
+        background: var(--bg-light);
+        color: var(--text-dark);
     }
 
     h1 {
         text-align: center;
-        color: #00f5d4;
+        color: var(--accent-color);
         font-size: 2.3rem;
-        text-shadow: 0px 0px 8px rgba(0,245,212,0.4);
-        letter-spacing: 1px;
+        text-shadow: 0px 0px 6px rgba(0,245,212,0.4);
+        margin-bottom: 0.3rem;
     }
 
+    p.subtitle {
+        text-align: center;
+        color: #9e9e9e;
+        font-size: 1rem;
+        margin-top: 0;
+        margin-bottom: 1.2rem;
+    }
+
+    [data-theme="light"] p.subtitle {
+        color: #333;
+    }
+
+    /* GUIDE BOX */
     .guide-text {
         text-align: center;
-        color: #dcdcdc;
+        color: var(--text-light);
         font-size: 1rem;
-        margin-top: -10px;
-        margin-bottom: 25px;
         background: rgba(255,255,255,0.05);
-        padding: 0.7rem;
+        padding: 0.7rem 1rem;
         border-radius: 10px;
         border: 1px solid rgba(0,245,212,0.3);
+        margin-bottom: 25px;
     }
 
+    [data-theme="light"] .guide-text {
+        background: rgba(0,0,0,0.03);
+        border: 1px solid rgba(0,0,0,0.15);
+        color: #222;
+    }
+
+    /* INPUTS */
     .stSelectbox, .stTextInput, .stButton button {
         border-radius: 10px !important;
-        border: 1px solid #00f5d4 !important;
+        border: 1px solid var(--accent-color) !important;
         background-color: rgba(30,30,30,0.9) !important;
-        color: #eaeaea !important;
+        color: var(--text-light) !important;
         transition: all 0.3s ease;
     }
 
-    .stTextInput > div > div > input {
-        color: #fff !important;
+    [data-theme="light"] .stSelectbox, 
+    [data-theme="light"] .stTextInput {
+        background-color: #f9f9f9 !important;
+        color: #111 !important;
+    }
+
+    .stButton button {
+        margin-top: 10px;
+        border-radius: 8px;
+        padding: 0.4rem 1.2rem;
+        font-weight: 600;
     }
 
     .stButton button:hover {
-        background-color: #00f5d4 !important;
+        background-color: var(--accent-color) !important;
         color: #000 !important;
-        box-shadow: 0 0 15px #00f5d4;
+        box-shadow: 0 0 12px var(--accent-color);
     }
 
+    /* RESULT BOX */
     .result-box {
-        background: rgba(25,25,25,0.8);
+        background: rgba(25,25,25,0.85);
         border-radius: 15px;
         padding: 1rem 1.5rem;
         margin-top: 1.5rem;
         box-shadow: 0px 0px 20px rgba(0,245,212,0.1);
     }
 
+    [data-theme="light"] .result-box {
+        background: rgba(250,250,250,0.8);
+        color: #000;
+        box-shadow: 0px 0px 10px rgba(0,0,0,0.05);
+    }
+
+    /* FOOTER */
     .footer {
         text-align: center;
         margin-top: 40px;
@@ -92,6 +139,11 @@ st.markdown("""
         color: #aaa;
     }
 
+    [data-theme="light"] .footer {
+        color: #555;
+    }
+
+    /* DISCLAIMER */
     .disclaimer {
         margin-top: 25px;
         padding: 1rem;
@@ -101,12 +153,17 @@ st.markdown("""
         text-align: center;
         line-height: 1.6;
     }
+
+    [data-theme="light"] .disclaimer {
+        color: #444;
+        border-top: 1px solid rgba(0,0,0,0.1);
+    }
     </style>
 """, unsafe_allow_html=True)
 
 # ------------- HEADER -------------
 st.markdown("<h1>Village Khasra Chatbot 💬</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align:center;color:#9e9e9e;'>Search village land details with ease — clean, readable, professional.</p>", unsafe_allow_html=True)
+st.markdown("<p class='subtitle'>Search village land details with ease — clean, readable, professional.</p>", unsafe_allow_html=True)
 
 # ------------- GUIDE TEXT -------------
 st.markdown("""
@@ -144,6 +201,7 @@ For official confirmation and clarification, please contact or visit the Moradab
 आधिकारिक पुष्टि और स्पष्टीकरण के लिए, कृपया मुरादाबाद विकास प्राधिकरण से संपर्क करें या कार्यालय में जाएँ।
 </div>
 """, unsafe_allow_html=True)
+
 
 
 
