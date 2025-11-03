@@ -3,7 +3,7 @@ import pandas as pd
 
 # ------------- PAGE CONFIG -------------
 st.set_page_config(
-    page_title="Moradabad Masterplan 2031 Land Use",
+    page_title="Moradabad Master Plan 2031 Land Use",
     page_icon="📜",
     layout="centered",
     initial_sidebar_state="collapsed"
@@ -65,10 +65,12 @@ st.markdown("""
     h1 {
         text-align: center;
         color: var(--primary-color);
-        font-size: 2.4rem;
+        font-size: 1.8rem;
         text-shadow: 0px 0px 8px rgba(0,245,212,0.4);
-        letter-spacing: 0.5px;
-        margin-bottom: 0.5rem;
+        letter-spacing: 0.3px;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+        white-space: nowrap;
     }
 
     .guide-text {
@@ -124,7 +126,6 @@ st.markdown("""
 
 # ------------- HEADER -------------
 st.markdown("<h1>Moradabad Master Plan 2031 Land Use</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align:center;color:#9e9e9e;'>Search village land details with ease — clean, readable, professional.</p>", unsafe_allow_html=True)
 
 # ------------- GUIDE TEXT -------------
 st.markdown("""
@@ -162,6 +163,7 @@ For official confirmation and clarification, please contact or visit the Moradab
 आधिकारिक पुष्टि और स्पष्टीकरण के लिए, कृपया मुरादाबाद विकास प्राधिकरण से संपर्क करें या कार्यालय में जाएँ।
 </div>
 """, unsafe_allow_html=True)
+
 
 
 
