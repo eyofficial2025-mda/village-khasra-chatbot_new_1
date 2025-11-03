@@ -89,6 +89,11 @@ st.markdown("""
         text-align: center;
         line-height: 1.6;
     }
+
+    /* Hide empty dataframe placeholder boxes */
+    [data-testid="stEmpty"] {
+        display: none !important;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -124,6 +129,7 @@ For official confirmation and clarification, please contact or visit the Moradab
 आधिकारिक पुष्टि और स्पष्टीकरण के लिए, कृपया मुरादाबाद विकास प्राधिकरण से संपर्क करें या कार्यालय में जाएँ।
 </div>
 """, unsafe_allow_html=True)
+
 
 
 
