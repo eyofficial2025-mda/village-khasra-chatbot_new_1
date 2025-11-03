@@ -122,10 +122,11 @@ st.markdown("<div class='footer'>Made with 💻 by Moradabad Development Authori
 st.markdown("""
 <div class='disclaimer'>
 <b>Disclaimer (अस्वीकरण):</b><br>
-English: The information provided by this online tool is intended for general guidance and preliminary verification. 
+The information provided by this online tool is intended for general guidance and preliminary verification. 
 For official confirmation and clarification, please contact or visit the Moradabad Development Authority.<br><br>
-Hindi: इस ऑनलाइन टूल द्वारा प्रदान की गई जानकारी केवल सामान्य मार्गदर्शन और प्रारंभिक सत्यापन के लिए है। 
+इस ऑनलाइन टूल द्वारा प्रदान की गई जानकारी केवल सामान्य मार्गदर्शन और प्रारंभिक सत्यापन के लिए है। 
 आधिकारिक पुष्टि और स्पष्टीकरण के लिए, कृपया मुरादाबाद विकास प्राधिकरण से संपर्क करें या कार्यालय में जाएँ।
 </div>
 """, unsafe_allow_html=True)
+
 
