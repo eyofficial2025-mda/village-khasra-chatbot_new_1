@@ -3,8 +3,7 @@ import pandas as pd
 
 # ------------- PAGE CONFIG -------------
 st.set_page_config(
-    page_title="Moradabad 
-    Masterplan 2031 Land Use",
+    page_title="Moradabad Masterplan 2031 Land Use",
     page_icon="📜",
     layout="centered",
     initial_sidebar_state="collapsed"
