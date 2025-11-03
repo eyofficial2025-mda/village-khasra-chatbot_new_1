@@ -1,10 +1,22 @@
+
+
+
+
+
+
+
+
+
+
+
+
 import streamlit as st
 import pandas as pd
 
 # ------------- PAGE CONFIG -------------
 st.set_page_config(
-    page_title="Village Khasra Chatbot",
-    page_icon="💬",
+    page_title="Moradabad Master Plan 2031 Land Use",
+    page_icon="📜",
     layout="centered",
     initial_sidebar_state="collapsed"
 )
@@ -27,19 +39,24 @@ df["Khasra"] = df["Khasra"].astype(str).str.strip()
 st.markdown("""
     <style>
     :root {
-        --primary-color: #00c6a9;
-        --text-color: #1a1a1a;
-        --text-color-dark: #e6e6e6;
-        --bg-light: #f7f7f7;
-        --bg-dark: #121212;
-        --border-light: #b3b3b3;
+        --primary-color: #00f5d4;
+        --accent: #00c9a7;
+        --light-bg: #f8f8f8;
+        --dark-bg: #121212;
+        --light-text: #1a1a1a;
+        --dark-text: #e6e6e6;
     }
 
-    /* Auto adapt to system/light vs dark theme */
+    body {
+        background: var(--light-bg);
+        color: var(--light-text);
+        font-family: 'Inter', sans-serif;
+    }
+
     @media (prefers-color-scheme: dark) {
         body {
             background: linear-gradient(145deg, #0d0d0d, #121212);
-            color: var(--text-color-dark);
+            color: var(--dark-text);
         }
         .stApp {
             background: linear-gradient(145deg, rgba(20,20,20,1), rgba(15,15,15,1));
@@ -48,81 +65,68 @@ st.markdown("""
         .stSelectbox, .stTextInput, .stButton button {
             background-color: rgba(30,30,30,0.9) !important;
             border: 1px solid var(--primary-color) !important;
-            color: var(--text-color-dark) !important;
-        }
-        .guide-text {
-            color: #dcdcdc !important;
-            background: rgba(255,255,255,0.03);
+            color: var(--dark-text) !important;
         }
     }
 
-    @media (prefers-color-scheme: light) {
-        body {
-            background: var(--bg-light);
-            color: var(--text-color);
-        }
-        .stApp {
-            background: var(--bg-light);
-            box-shadow: 0px 0px 15px rgba(0,0,0,0.06);
-        }
-        h1 { color: #009c88; text-shadow: none; }
-        .stSelectbox, .stTextInput, .stButton button {
-            background-color: #ffffff !important;
-            border: 1px solid #009c88 !important;
-            color: #000 !important;
-        }
-        .stTextInput > div > div > input {
-            color: #000 !important;
-        }
-        .guide-text {
-            background: #e8fffa;
-            color: #004d40 !important;
-            border: 1px solid #009c88;
-        }
-        .footer, .disclaimer {
-            color: #444 !important;
-        }
+    .stApp {
+        padding: 3rem;
+        border-radius: 25px;
     }
 
     h1 {
         text-align: center;
-        font-size: 2.3rem;
-        letter-spacing: 1px;
+        color: var(--primary-color);
+        font-size: 2.4rem;
+        text-shadow: 0px 0px 8px rgba(0,245,212,0.4);
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
     }
 
     .guide-text {
         text-align: center;
+        color: #dcdcdc;
         font-size: 1rem;
         margin-top: -10px;
         margin-bottom: 25px;
+        background: rgba(255,255,255,0.05);
         padding: 0.7rem;
         border-radius: 10px;
+        border: 1px solid rgba(0,245,212,0.3);
+    }
+
+    .stSelectbox, .stTextInput, .stButton button {
+        border-radius: 10px !important;
+        border: 1px solid var(--accent) !important;
+        transition: all 0.3s ease;
     }
 
     .stButton button:hover {
-        background-color: var(--primary-color) !important;
+        background-color: var(--accent) !important;
         color: #000 !important;
-        box-shadow: 0 0 15px var(--primary-color);
+        box-shadow: 0 0 15px var(--accent);
     }
 
     .result-box {
-        background: rgba(25,25,25,0.05);
+        background: rgba(25,25,25,0.8);
         border-radius: 15px;
         padding: 1rem 1.5rem;
         margin-top: 1.5rem;
-        box-shadow: 0px 0px 10px rgba(0,245,212,0.1);
+        box-shadow: 0px 0px 20px rgba(0,245,212,0.1);
     }
 
     .footer {
         text-align: center;
         margin-top: 40px;
         font-size: 0.85rem;
+        color: #aaa;
     }
 
     .disclaimer {
         margin-top: 25px;
         padding: 1rem;
         border-top: 1px solid rgba(0,245,212,0.2);
+        color: #aaa;
         font-size: 0.85rem;
         text-align: center;
         line-height: 1.6;
@@ -131,7 +135,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ------------- HEADER -------------
-st.markdown("<h1>Village Khasra Chatbot 💬</h1>", unsafe_allow_html=True)
+st.markdown("<h1>Moradabad Master Plan 2031 Land Use</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align:center;color:#9e9e9e;'>Search village land details with ease — clean, readable, professional.</p>", unsafe_allow_html=True)
 
 # ------------- GUIDE TEXT -------------
@@ -170,17 +174,6 @@ For official confirmation and clarification, please contact or visit the Moradab
 आधिकारिक पुष्टि और स्पष्टीकरण के लिए, कृपया मुरादाबाद विकास प्राधिकरण से संपर्क करें या कार्यालय में जाएँ।
 </div>
 """, unsafe_allow_html=True)
-
-
-
-
-
-
-
-
-
-
-
 
 
 
