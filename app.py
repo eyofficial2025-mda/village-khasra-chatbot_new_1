@@ -1,169 +1,142 @@
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(page_title="Village Khasra Chatbot", page_icon="💬", layout="centered")
+# Page Configuration
+st.set_page_config(page_title="Village Khasra Chatbot", layout="centered")
 
-# --- STYLING ---
+# Custom CSS for universal light/dark theme styling
 st.markdown("""
-    <style>
-    :root {
-        --main-color: #00E0FF;
-        --bg-gradient-dark: radial-gradient(circle at top left, #0b0c10, #1f2833);
-        --bg-gradient-light: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-        --card-bg-dark: rgba(255,255,255,0.05);
-        --card-bg-light: rgba(0,0,0,0.05);
-        --text-light: #f9f9f9;
-        --text-dark: #1b1b1b;
-    }
+<style>
+:root {
+  --card-bg: rgba(240, 240, 240, 0.9);
+  --text-color: #000;
+}
 
-    [data-testid="stAppViewContainer"] {
-        background: var(--bg-gradient-dark);
-        color: var(--text-light);
-    }
-    [data-theme="light"] [data-testid="stAppViewContainer"] {
-        background: var(--bg-gradient-light);
-        color: var(--text-dark);
-    }
+[data-theme="dark"] {
+  --card-bg: rgba(20, 20, 20, 0.8);
+  --text-color: #fff;
+}
 
-    h1 {
-        text-align: center;
-        font-size: 2.6rem;
-        font-weight: 800;
-        text-shadow: 0 0 15px rgba(0,224,255,0.7);
-        color: var(--main-color);
-    }
+body, .stApp {
+  background: linear-gradient(145deg, #0f2027, #203a43, #2c5364);
+  color: var(--text-color);
+}
 
-    p, label, div, span {
-        font-family: "Inter", sans-serif;
-    }
+.title {
+  text-align: center;
+  font-size: 3rem;
+  font-weight: 800;
+  color: #00eaff;
+  text-shadow: 0px 0px 20px #00eaffaa;
+  margin-bottom: 0.3em;
+}
 
-    /* Instruction + Disclaimer Cards */
-    .info-card {
-        background: var(--card-bg-dark);
-        padding: 1.5rem 1.8rem;
-        border-radius: 16px;
-        margin-bottom: 1.8rem;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        transition: all 0.3s ease-in-out;
-    }
-    [data-theme="light"] .info-card {
-        background: var(--card-bg-light);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
+.subtitle {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #bbb;
+  margin-bottom: 2em;
+}
 
-    .info-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 25px rgba(0,224,255,0.3);
-    }
+.card {
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 25px;
+  margin-bottom: 1.5em;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease-in-out;
+}
+.card:hover {
+  transform: scale(1.01);
+}
 
-    .info-title {
-        font-weight: 700;
-        font-size: 1.1rem;
-        color: var(--main-color);
-        margin-bottom: 0.5rem;
-    }
+.guide-title {
+  font-weight: 700;
+  font-size: 1.2rem;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #00eaff;
+}
 
-    /* Inputs */
-    .stSelectbox div div, .stTextInput input {
-        border: 1px solid rgba(0,224,255,0.4) !important;
-        border-radius: 10px !important;
-        background-color: rgba(0,0,0,0.2) !important;
-        color: inherit !important;
-        transition: 0.2s;
-    }
+.guide-steps {
+  font-size: 1rem;
+  line-height: 1.7;
+  text-align: left;
+  margin-left: 1em;
+  color: var(--text-color);
+}
 
-    [data-theme="light"] .stSelectbox div div, [data-theme="light"] .stTextInput input {
-        background-color: rgba(255,255,255,0.8) !important;
-        color: var(--text-dark) !important;
-    }
+.disclaimer {
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 15px;
+  border-left: 5px solid #00eaff;
+  border-radius: 10px;
+  margin-top: 2em;
+  color: var(--text-color);
+}
 
-    .stSelectbox div div:focus-within, .stTextInput input:focus {
-        box-shadow: 0 0 12px rgba(0,224,255,0.7);
-        border-color: var(--main-color);
-    }
+.stSelectbox, .stTextInput > div > div > input {
+  border-radius: 12px !important;
+  border: 1px solid #00eaff !important;
+  background-color: rgba(255,255,255,0.05) !important;
+  color: var(--text-color) !important;
+}
 
-    /* Button */
-    button[kind="primary"] {
-        background: linear-gradient(90deg, #00C6FF, #0072FF);
-        color: white !important;
-        border-radius: 10px !important;
-        border: none !important;
-        font-weight: bold;
-        padding: 0.4rem 1.4rem;
-        box-shadow: 0 0 12px rgba(0,224,255,0.4);
-        transition: all 0.25s ease-in-out;
-    }
-
-    button[kind="primary"]:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 18px rgba(0,224,255,0.6);
-    }
-
-    /* Data Table */
-    [data-testid="stDataFrame"] {
-        border-radius: 10px !important;
-        overflow: hidden !important;
-    }
-
-    /* Disclaimer */
-    .disclaimer {
-        margin-top: 2.5rem;
-        text-align: center;
-        font-size: 0.9rem;
-        line-height: 1.6;
-        opacity: 0.8;
-        background: var(--card-bg-dark);
-        padding: 1rem 1.5rem;
-        border-radius: 12px;
-        box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    }
-    [data-theme="light"] .disclaimer {
-        background: var(--card-bg-light);
-    }
-    </style>
+.stButton > button {
+  background: linear-gradient(90deg, #00c6ff, #0072ff);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.stButton > button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #00eaffaa;
+}
+</style>
 """, unsafe_allow_html=True)
 
-# --- HEADER ---
-st.markdown("<h1>Village Khasra Chatbot</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align:center;'>Search village land details with ease — clean, readable, professional.</p>", unsafe_allow_html=True)
+# Title
+st.markdown('<div class="title">Village Khasra Chatbot</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Search village land details with ease — clean, readable, professional.</div>', unsafe_allow_html=True)
 
-# --- INSTRUCTIONS CARD ---
+# Guide Box
 st.markdown("""
-<div class='info-card'>
-    <div class='info-title'>How to Use</div>
-    <p>1. Choose a Village from the dropdown.</p>
-    <p>2. Enter the Khasra number in the input box.</p>
-    <p>3. Click on the <b>Search</b> button to view land details.</p>
+<div class="card">
+  <div class="guide-title">How to Use</div>
+  <div class="guide-steps">
+  1️⃣ Choose a village from the dropdown.<br>
+  2️⃣ Enter the Khasra number in the input box.<br>
+  3️⃣ Click on the <b>Search</b> button to view details.
+  </div>
 </div>
 """, unsafe_allow_html=True)
 
-# --- INPUT SECTION ---
-village = st.selectbox("Select a Village", ["Ababbaspur", "Mau", "Bilari"])
+# Interactive Inputs
+villages = ["Ababbaspur", "Kailam", "Chhapra", "Sonta", "Asalatpur"]
+village = st.selectbox("Select a Village", villages)
 khasra = st.text_input("Enter Khasra Number")
 
-# --- SEARCH BUTTON + TABLE ---
 if st.button("Search"):
-    if not khasra.strip():
-        st.warning("Please enter a Khasra number to search.")
+    if khasra.strip():
+        st.success(f"Searching Khasra number {khasra} in {village}...")
     else:
-        st.success("Khasra Details Found")
-        df = pd.DataFrame({
-            "Village": [village]*3,
-            "Khasra": [khasra]*3,
-            "Land use": ["Agriculture", "Residential", "Green Belt"],
-            "Latitude": [28.84, 28.85, 28.86],
-            "Longitude": [78.76, 78.77, 78.78]
-        })
-        st.dataframe(df)
+        st.warning("Please enter a valid Khasra number before searching.")
 
-# --- DISCLAIMER (Bilingual) ---
+# Disclaimer
 st.markdown("""
-<div class='disclaimer'>
-    <b>Disclaimer:</b><br>
-    The data displayed here is for informational purposes only. Users are advised to verify land and khasra details from the official records of the <b>Moradabad Development Authority</b> before taking any decisions.<br><br>
-    यहाँ प्रदर्शित आंकड़े केवल जानकारी हेतु हैं। उपयोगकर्ताओं को सलाह दी जाती है कि वे किसी भी निर्णय से पहले <b>मुरादाबाद विकास प्राधिकरण</b> के आधिकारिक अभिलेखों से भूखंड एवं खसरा विवरण की पुष्टि करें।
+<div class="disclaimer">
+<b>Disclaimer:</b><br>
+All information provided here is for reference and convenience only. Actual land records should be verified through official government sources.<br><br>
+<b>अस्वीकरण:</b><br>
+यह जानकारी केवल संदर्भ और सुविधा के लिए है। वास्तविक भूमि अभिलेखों की पुष्टि सरकारी अभिलेखों से अवश्य करें।
 </div>
 """, unsafe_allow_html=True)
+
 
 
 
