@@ -32,13 +32,6 @@ st.markdown("""
         font-family: 'Inter', sans-serif;
     }
 
-    .stApp {
-        background: linear-gradient(145deg, rgba(20,20,20,1), rgba(15,15,15,1));
-        padding: 3rem;
-        border-radius: 25px;
-        box-shadow: 0px 0px 25px rgba(0, 255, 200, 0.15);
-    }
-
     h1 {
         text-align: center;
         color: #00f5d4;
@@ -90,8 +83,11 @@ st.markdown("""
         line-height: 1.6;
     }
 
-    /* Hide empty dataframe placeholder boxes */
-    [data-testid="stEmpty"] {
+    /* Completely remove all blank divs/containers */
+    div[data-testid="stVerticalBlock"] > div:empty {
+        display: none !important;
+    }
+    div[data-testid="stHorizontalBlock"] > div:empty {
         display: none !important;
     }
     </style>
@@ -105,14 +101,18 @@ st.markdown("<p style='text-align:center;color:#9e9e9e;'>Search village land det
 village = st.selectbox("🏡 Select a Village", sorted(df["Village"].unique()))
 khasra = st.text_input("📜 Enter Khasra Number")
 
-if st.button("Search 🔍"):
+# only run search logic after clicking button
+search_clicked = st.button("Search 🔍")
+
+# ------------- DISPLAY RESULTS -------------
+if search_clicked:
     khasra = khasra.strip()
     result = df[(df["Village"] == village) & (df["Khasra"] == khasra)]
 
     if not result.empty:
         st.markdown("<div class='result-box'>", unsafe_allow_html=True)
         st.markdown(f"<h3 style='color:#00f5d4;'>✅ Khasra Details Found</h3>", unsafe_allow_html=True)
-        st.dataframe(result[["Village", "Khasra", "Land use", "Sub class", "Latitude", "Longitude"]])
+        st.dataframe(result[["Village", "Khasra", "Land use", "Sub class", "Latitude", "Longitude"]], hide_index=True)
         st.markdown("</div>", unsafe_allow_html=True)
     else:
         st.markdown("<div class='result-box'><h4 style='color:#ff4d4d;'>⚠️ No matching Khasra found in this village.</h4></div>", unsafe_allow_html=True)
@@ -129,6 +129,7 @@ For official confirmation and clarification, please contact or visit the Moradab
 आधिकारिक पुष्टि और स्पष्टीकरण के लिए, कृपया मुरादाबाद विकास प्राधिकरण से संपर्क करें या कार्यालय में जाएँ।
 </div>
 """, unsafe_allow_html=True)
+
 
 
 
